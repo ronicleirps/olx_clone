@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:olx_clone/view/InputCustomizado.dart';
+import 'package:olx_clone/models/Usuario.dart';
+import 'package:olx_clone/view/inputCustomizado.dart';
+
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -12,16 +14,22 @@ class _HomeState extends State<Home> {
   bool _cadastrar = false;
   String _mensagemErro = '';
 
+    
+
   _validarCampos() {
     String email = _controllerEmail.text;
     String senha = _controllerSenha.text;
 
     if (email.isNotEmpty && email.contains("@")) {
       if (senha.isNotEmpty && senha.length > 6) {
+        Usuario usuario = Usuario();
+        usuario.email = email;
+        usuario.senha = senha;
+
         if (_cadastrar) {
-          _cadastrarUsuario();
+          _cadastrarUsuario(usuario);
         } else {
-          _logarUsuario();
+          _logarUsuario(usuario);
         }
       } else {
         setState(() {
@@ -35,9 +43,9 @@ class _HomeState extends State<Home> {
     }
   }
 
-  _cadastrarUsuario() {}
+  _cadastrarUsuario(Usuario usuario) {}
 
-  _logarUsuario() {}
+  _logarUsuario(Usuario usuario) {}
 
   TextEditingController _controllerEmail =
       TextEditingController(text: "ronclei@gmail.com");
@@ -81,7 +89,7 @@ class _HomeState extends State<Home> {
                   children: [
                     const Text("Logar"),
                     Switch(
-                      activeColor:const Color(0xff9c27b0),
+                        activeColor: const Color(0xff9c27b0),
                         value: _cadastrar,
                         onChanged: (bool valor) {
                           setState(() {
