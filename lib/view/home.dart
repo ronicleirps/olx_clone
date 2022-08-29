@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:olx_clone/models/Usuario.dart';
+import 'package:olx_clone/models/usuario.dart';
 import 'package:olx_clone/view/inputCustomizado.dart';
-
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -10,11 +11,28 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
+
+
 class _HomeState extends State<Home> {
+
+  @override
+  void initState() {
+    super.initState();
+    Firebase.initializeApp().whenComplete(() { 
+      print("completed");
+      setState(() {});
+    });
+  }
+
   bool _cadastrar = false;
   String _mensagemErro = '';
 
-    
+  String _textoBotao = 'Entrar';
+
+  TextEditingController _controllerEmail =
+      TextEditingController(text: "ronclei@gmail.com");
+  TextEditingController _controllerSenha =
+      TextEditingController(text: "876134");
 
   _validarCampos() {
     String email = _controllerEmail.text;
@@ -43,14 +61,31 @@ class _HomeState extends State<Home> {
     }
   }
 
-  _cadastrarUsuario(Usuario usuario) {}
+  _cadastrarUsuario(Usuario usuario) {
+    //Firebase.initializeApp();
+    FirebaseAuth auth = FirebaseAuth.instance;
 
-  _logarUsuario(Usuario usuario) {}
+    auth
+        .createUserWithEmailAndPassword(
+            email: usuario.email, password: usuario.senha)
+        .then((firebaseUser) {
+      print('cadastrado');
+      // redireciona para tela principal
+    });
+  }
 
-  TextEditingController _controllerEmail =
-      TextEditingController(text: "ronclei@gmail.com");
-  TextEditingController _controllerSenha =
-      TextEditingController(text: "111111");
+  _logarUsuario(Usuario usuario) {
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    auth
+        .signInWithEmailAndPassword(
+            email: usuario.email, password: usuario.senha)
+        .then((firebaseUser) => {
+
+          print("LOGADO")
+              // redireciona para tela principal
+            });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,17 +129,24 @@ class _HomeState extends State<Home> {
                         onChanged: (bool valor) {
                           setState(() {
                             _cadastrar = valor;
+                            _textoBotao = "Entrar";
+                            if (_cadastrar) {
+                              _textoBotao = "Cadastrar";
+                            }
                           });
-                        })
+                        }),
+                        const Text("Cadastrar"),
                   ],
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _validarCampos();
+                  },
                   style: ElevatedButton.styleFrom(
                     primary: const Color(0xff9c27b0),
                   ),
-                  child: const Text(
-                    "Entrar",
+                  child: Text(
+                    _textoBotao,
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
                 ),
