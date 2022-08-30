@@ -4,21 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:olx_clone/models/usuario.dart';
 import 'package:olx_clone/view/inputCustomizado.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key key}) : super(key: key);
+class Login extends StatefulWidget {
+  const Login({Key key}) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Login> createState() => _LoginState();
 }
 
-
-
-class _HomeState extends State<Home> {
-
+class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    Firebase.initializeApp().whenComplete(() { 
+    Firebase.initializeApp().whenComplete(() {
       print("completed");
       setState(() {});
     });
@@ -70,7 +67,10 @@ class _HomeState extends State<Home> {
             email: usuario.email, password: usuario.senha)
         .then((firebaseUser) {
       print('cadastrado');
+
       // redireciona para tela principal
+
+      Navigator.pushReplacementNamed(context, "/");
     });
   }
 
@@ -80,11 +80,11 @@ class _HomeState extends State<Home> {
     auth
         .signInWithEmailAndPassword(
             email: usuario.email, password: usuario.senha)
-        .then((firebaseUser) => {
+        .then((firebaseUser) {
+      print("LOGADO");
 
-          print("LOGADO")
-              // redireciona para tela principal
-            });
+      Navigator.pushReplacementNamed(context, "/");
+    });
   }
 
   @override
@@ -135,7 +135,7 @@ class _HomeState extends State<Home> {
                             }
                           });
                         }),
-                        const Text("Cadastrar"),
+                    const Text("Cadastrar"),
                   ],
                 ),
                 ElevatedButton(
